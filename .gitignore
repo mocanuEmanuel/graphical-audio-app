@@ -39,3 +39,21 @@
 
 # debug information files
 *.dwo
+
+# build and IDE clutter
+[Bb]uild/
+bin/
+out/
+.vs/
+.vscode/
+
+# CMake artifacts
+CMakeCache.txt
+CMakeFiles/
+CMakeSettings.json
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+
+# raylib build cache
+external/raylib/build/
