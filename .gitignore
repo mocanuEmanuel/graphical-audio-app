@@ -57,3 +57,6 @@ compile_commands.json
 
 # raylib build cache
 external/raylib/build/
+
+# nlohmann/json build cache
+external/json/build/

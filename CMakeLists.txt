@@ -11,6 +11,10 @@ set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/raylib)
 
+# nlohmann/json (header-only, no build needed)
+set(JSON_BuildTests OFF CACHE INTERNAL "")
+add_subdirectory(external/json)
+
 #  .cpp files
 file(GLOB_RECURSE SRC_FILES "src/*.cpp")
 
@@ -20,14 +24,28 @@ add_executable(${PROJECT_NAME} ${SRC_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC 
     include 
     external/raylib/src
+    external/json/include
 )
 
-# Link Raylib and Windows Audio System
-target_link_libraries(${PROJECT_NAME} PUBLIC raylib winmm)
+if(WIN32)
+    set(PLATFORM_LIBS winmm)
+else()
+    #crossplatform
+    set(PLATFORM_LIBS m pthread dl rt X11)
+endif()
+
+# Link Raylib and Audio System
+target_link_libraries(${PROJECT_NAME} PUBLIC 
+    raylib 
+    nlohmann_json::nlohmann_json
+    ${PLATFORM_LIBS}
+)
 
 # Copy Assets folder to the build folder
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_CURRENT_SOURCE_DIR}/assets"
-    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
+        "${CMAKE_CURRENT_SOURCE_DIR}/assets"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
+    COMMENT "Copying assets to build directory..."
 )
