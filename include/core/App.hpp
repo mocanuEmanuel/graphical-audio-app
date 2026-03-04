@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include "ui/GridContainer.hpp"
+#include "core/StateManager.hpp"
 
 namespace synth {
 
@@ -20,6 +22,9 @@ private:
     void handleInput();      
     void update(float dt);    
     void render();  
+
+    std::unique_ptr<StateManager> m_stateManager;
+    std::unique_ptr<ui::GridContainer> m_uiRoot;
 
 };
 
