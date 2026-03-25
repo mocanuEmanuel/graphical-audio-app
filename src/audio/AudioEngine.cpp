@@ -12,11 +12,28 @@ namespace synth {
     void EffectBase::setEnabled(bool enabled) { m_enabled = enabled; }
     void EffectBase::reset() {}
 
-    AudioEngine::AudioEngine(StateManager& stateManager, const AudioConfig& config)
-        : m_stateManager(stateManager), m_config(config) {
-        m_stateManager.addObserver(this);
-        m_audioBuffer.resize(m_config.bufferSize);
+   AudioEngine::AudioEngine(StateManager& stateManager, const AudioConfig& config)
+    : m_stateManager(stateManager), m_config(config), m_oscillator(config.sampleRate)
+{
+    m_stateManager.addObserver(this);
+    m_audioBuffer.resize(m_config.bufferSize);
+    m_oscillator.setFrequency(m_stateManager.getFrequency());
+
+    //audio stream initialization
+    SetAudioStreamBufferSizeDefault(m_config.bufferSize);
+    m_stream = LoadAudioStream(
+        static_cast<unsigned int>(m_config.sampleRate),
+        32,   //32bit float samples
+        1     //mono channel
+    );
+    
+    if (IsAudioStreamValid(m_stream)) {
+        m_streamInitialized = true;
+        SetAudioStreamVolume(m_stream, m_masterVolume);
     }
+    
+    m_initialized = true;
+}
 
     AudioEngine::~AudioEngine() {
         stop();
@@ -46,6 +63,10 @@ namespace synth {
         return m_effects;
     }
 
+    Oscillator& AudioEngine::getOscillator() {
+        return m_oscillator;
+    }
+
     IEffect* AudioEngine::getEffect(const std::string& name) {
         for (const auto& effect : m_effects) {
             if (effect->getName() == name) {
@@ -66,25 +87,42 @@ float AudioEngine::getMasterVolume() const {
 }
 
 void AudioEngine::start() {
-    if (m_streamInitialized && !m_playing && m_initialized) {
-        PlayAudioStream(m_stream);
-        m_playing = true;
+    if (m_streamInitialized && m_initialized) {
+        m_isPlaying = true;
+        // Prime the buffer before playing
+        fillAudioStream();
+        
+        if (!IsAudioStreamPlaying(m_stream)) {
+            PlayAudioStream(m_stream);
+        } else {
+            ResumeAudioStream(m_stream);
+        }
     }
 }
 
+
 void AudioEngine::stop() {
-    if (m_streamInitialized && m_playing) {
-        StopAudioStream(m_stream);
-        m_playing = false;
+    if (m_streamInitialized) {
+        m_isPlaying = false;
+        // pause op to maintain state
+        PauseAudioStream(m_stream);
     }
 }
 
 bool AudioEngine::isPlaying() const {
-    return m_playing;
+        return m_isPlaying;
 }
 
 void AudioEngine::update() {
-    if (!m_playing || !m_initialized) return;
+    if (!m_initialized || !isPlaying()) return;
+    
+    // In case raylib starved and fully stopped the stream internally, resume it
+    if (!IsAudioStreamPlaying(m_stream)) {
+        ResumeAudioStream(m_stream);
+        if (!IsAudioStreamPlaying(m_stream)) {
+            PlayAudioStream(m_stream);
+        }
+    }
     
     fillAudioStream();
 }
@@ -93,7 +131,7 @@ void AudioEngine::fillAudioStream() {
     if (!m_streamInitialized) return;
     
     // check if the hardware buffer needs more chunks
-    if (IsAudioStreamProcessed(m_stream)) {
+    while (IsAudioStreamProcessed(m_stream)) {
         processAudio();
         
         // push processed chunks to raylib
@@ -102,9 +140,7 @@ void AudioEngine::fillAudioStream() {
 }
 
 void AudioEngine::processAudio() {
-   //need to implement oscillator later for now silence
-    std::fill(m_audioBuffer.begin(), m_audioBuffer.end(), 0.0f);
-    
+    m_oscillator.generate(m_audioBuffer);
     applyEffects(m_audioBuffer);
 }
 
@@ -117,9 +153,46 @@ void AudioEngine::applyEffects(std::span<float> audioBuffer) {
 }
 
 void AudioEngine::onNotify(Event event, const std::any& data) {
-    //later
-    (void)event;
-    (void)data;
+    switch (event) {
+        case Event::FrequencyChanged:
+            if (data.has_value()) {
+                try {
+                    float freq = std::any_cast<float>(data);
+                    m_oscillator.setFrequency(freq);
+                } catch (const std::bad_any_cast&) {}
+            }
+            break;
+            
+        case Event::ModulationChanged:
+            if (data.has_value()) {
+                try {
+                    float mod = std::any_cast<float>(data);
+                    // Modulate oscillator amplitude: base 0.3 + mod scales up to 0.7
+                    m_oscillator.setAmplitude(0.3f + mod * 0.4f);
+                } catch (const std::bad_any_cast&) {}
+            }
+            break;
+            
+        case Event::TemperatureChanged:
+            // Temperature → Muffle effect cutoff
+            // Handled per-frame in App::update() to keep AudioEngine generic
+            break;
+            
+        case Event::EffectToggled:
+            // Toggle all effects on/off (global switch)
+            if (data.has_value()) {
+                try {
+                    bool on = std::any_cast<bool>(data);
+                    for (auto& effect : m_effects) {
+                        if (effect) effect->setEnabled(on);
+                    }
+                } catch (const std::bad_any_cast&) {}
+            }
+            break;
+            
+        default:
+            break;
+    }
 }
 
 }

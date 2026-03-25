@@ -22,6 +22,8 @@ public:
     virtual void computeLayout(Rectangle availableSpace) {
         m_bounds = availableSpace;
     }
+    void setTooltip(const std::string& text) { m_tooltip = text; }
+
 
 protected:
     std::string m_id;
@@ -30,6 +32,8 @@ protected:
     bool m_hovered = false;
     bool m_visible = true;
     bool m_enabled = true;
+    std::string m_tooltip;
+
 };
 
 }

@@ -30,6 +30,10 @@ namespace synth {
     float StateManager::getFrequency() const {
         return m_currentState.frequency;
     }
+     float StateManager::getModulation() const {
+        return m_currentState.modulation;
+    }
+
     bool StateManager::isEffectOn() const {
         return m_currentState.effectOn; 
     }
@@ -48,14 +52,21 @@ namespace synth {
         m_manuelState.temperature = temp;
         if(m_currentState.mode != "HARDWARE"){
             m_currentState.temperature = temp;
-            notifyObserver(Event::ParameterChanged, temp);
+            notifyObserver(Event::TemperatureChanged, temp);
         }
     }
     void StateManager::setFrequency(float freq) {
         m_manuelState.frequency = freq;
         if(m_currentState.mode != "HARDWARE"){
             m_currentState.frequency = freq;
-            notifyObserver(Event::ParameterChanged, freq);
+            notifyObserver(Event::FrequencyChanged, freq);
+        }
+    }
+    void StateManager::setModulation(float mod) {
+        m_manuelState.modulation = mod;
+        if(m_currentState.mode != "HARDWARE"){
+            m_currentState.modulation = mod;
+            notifyObserver(Event::ModulationChanged, mod);
         }
     }
     void StateManager::toggleEffect(bool on) {
@@ -68,14 +79,14 @@ namespace synth {
         m_manuelState.lightLevel = level;
         if(m_currentState.mode != "HARDWARE"){
             m_currentState.lightLevel = level;
-            notifyObserver(Event::ParameterChanged, level);
+            notifyObserver(Event::LightLevelChanged, level);
         }
     }
     void StateManager::setHumidity(float humidity) {
         m_manuelState.humidity = humidity;
         if(m_currentState.mode != "HARDWARE"){
             m_currentState.humidity = humidity;
-            notifyObserver(Event::ParameterChanged, humidity);
+            notifyObserver(Event::HumidityChanged, humidity);
         }
     }
     void StateManager::setMode(const std::string& mode) {

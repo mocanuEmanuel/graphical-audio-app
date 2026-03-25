@@ -6,7 +6,11 @@
 namespace synth {
     
     enum class Event{
-        ParameterChanged,
+        TemperatureChanged,
+        FrequencyChanged,
+        ModulationChanged,
+        LightLevelChanged,  
+        HumidityChanged, 
         ModeChanged,
         EffectToggled
     };

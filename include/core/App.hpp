@@ -3,8 +3,12 @@
 #include <string>
 #include "ui/GridContainer.hpp"
 #include "core/StateManager.hpp"
+#include "core/CommandHistory.hpp"
 
 namespace synth {
+
+class AudioEngine;
+class MuffleEffect;
 
 class App {
 public:
@@ -24,6 +28,8 @@ private:
     void render();  
 
     std::unique_ptr<StateManager> m_stateManager;
+    std::unique_ptr<AudioEngine> m_audioEngine;
+    std::unique_ptr<CommandHistory> m_commandHistory;
     std::unique_ptr<ui::GridContainer> m_uiRoot;
 
 };

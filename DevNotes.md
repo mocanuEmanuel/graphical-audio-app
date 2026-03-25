@@ -189,3 +189,40 @@ REFERENCES
 - https://github.com/jiwoojang/AudioVisualizer
 - https://github.com/MrOneTwo/Raylib-shaders
 - https://github.com/raysan5/raylib/blob/master/examples/shaders/shaders_model_shader.c
+- https://audioprocessingframework.github.io/files.html
+
+
+NEW REFERENCES
+
+  -the Sonification Handbook, Thomas Hermann
+  https://d1wqtxts1xzle7.cloudfront.net/75635010/TheSonificationHandbook-chapter18-libre.pdf?1638534051=&response-content-disposition=inline%3B+filename%3DSonification_for_Process_Monitoring.pdf&Expires=1773926876&Signature=Mm--fQOdBTm~NOwQswNVIze6a0Ujh3IQL6bTMYFi7CsY-CKVqXHD8Gj3A-TtznB6FJ4BcAodrD5RU5hl~ncD8PWJD8nnQvExRc1lUzX0ld~AT~uFaQOvD5X8TDzS6VEBtBt~E5~qiMF2ERDZVv2EdnD-B~68uyAJev2yeHgrYs4DNykySIOUJYW9jVmMLBt6she2FVR0YMAtNSuMvrhEP4FhKcWn3lH4bMcBy4~rIfZp7vO2lOzzYzjn5kjCHFTQISvejwijgHiqNpSADYPdP7hTmyt16n04rX4HkZuKhMDcfL5BA~fO39vBn9xtpF8HTg-cah7OiCaFjjv7U2TL1g__&Key-Pair-Id=APKAJLOHF5GGSLRBV4ZA
+
+  pg23,
+
+
+ -Theory of Sonification, Bruce N.
+ https://www.researchgate.net/profile/Michael-Nees/publication/213799070_Theory_of_Sonification/links/0fcfd5100a69e062d5000000/Theory-of-Sonification.pdf
+
+
+
+Interactive multimedia installation art development using recycled input and sensing devices
+Ioannis Deliyannis
+https://www.inderscienceonline.com/doi/abs/10.1504/IJART.2016.077235
+
+
+Embedding an interactive art installation into a building forenhancing citizen’s awareness on urban environmentalconditions
+https://dl.acm.org/doi/epdf/10.1145/3469410.3469426
+
+A Comprehensive Study of Emotional Responses in AI-Enhanced Interactive Installation 
+https://www.mdpi.com/2071-1050/15/22/15830
+
+
+Timoney, J., Lazzarini, V., and Keller, D. (2020). Diy electronics for ubiquitous music
+ecosystems. In Lazzarini, V., Keller, D., Otero, N., and Turchet, L., editors, Ubiquitous
+Music Ecologies, chapter 3. Routledge
+
+https://www.taylorfrancis.com/chapters/edit/10.4324/9780429281440-3/diy-electronics-ubiquitous-music-ecosystems-joseph-timoney-victor-lazzarini-dami%C3%A1n-keller
+
+
+[BOOK] Programming Interactivity: A Designer's Guide to Processing, Arduino, and Openframeworks
+https://books.google.ro/books?hl=en&lr=&id=STXR9vCXs5YC&oi=fnd&pg=PR3&dq=C%2B%2B+arduino+shader+audio&ots=k_0UGLK_78&sig=bCrNNPMWUeNeU7rGKzIYpiNDGHs&redir_esc=y#v=onepage&q&f=false

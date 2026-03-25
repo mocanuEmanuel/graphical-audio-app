@@ -8,6 +8,7 @@ namespace synth {
  struct SynthState{
     float temperature = 0.0f;
     float frequency = 0.0f;
+    float modulation = 0.0f;
     bool effectOn = false;
     int lightLevel = 0;
     float humidity = 0.0f;
@@ -27,6 +28,7 @@ public:
     //Getters
     [[nodiscard]] float getTemperature() const;
     [[nodiscard]] float getFrequency() const;
+    [[nodiscard]] float getModulation() const;
     [[nodiscard]] bool isEffectOn() const;
     [[nodiscard]] int getLightLevel() const;
     [[nodiscard]] float getHumidity() const;
@@ -35,6 +37,7 @@ public:
     //Setters
     void setTemperature(float temp);
     void setFrequency(float freq);
+    void setModulation(float mod);
     void toggleEffect(bool on);
     void setLightLevel(int level);
     void setHumidity(float humidity);   

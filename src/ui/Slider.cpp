@@ -1,6 +1,7 @@
 #include "ui/Slider.hpp"
 #include <algorithm>
 #include "raymath.h"
+#include "ui/Tooltip.hpp"
 
 namespace synth::ui {
 
@@ -13,6 +14,8 @@ void Slider::setValue(float val) {
 
 void Slider::draw(const Theme& theme) const {
     if (!m_visible) return;
+
+    Vector2 mousePos = GetMousePosition();
     
     float padding = theme.padding;
     float startX = m_bounds.x + padding;
@@ -20,6 +23,15 @@ void Slider::draw(const Theme& theme) const {
     
     std::string fullLabel = m_label + ":";
     DrawText(fullLabel.c_str(), static_cast<int>(startX), static_cast<int>(y), theme.fontSize, theme.textDim);
+
+    // tooltip icon
+    float questionX = startX + 60.0f;
+    float questionY = y;
+
+    Rectangle helpRect = { questionX, questionY, 14.0f, 14.0f };
+    DrawText("?", (int)questionX, (int)questionY, theme.fontSize, theme.accent);
+
+    
     
     float barX = startX + 80.0f; 
     float barWidth = m_bounds.width - padding * 2.0f - 160.0f;
@@ -32,9 +44,7 @@ void Slider::draw(const Theme& theme) const {
     
     DrawRectangleLinesEx(barBg, theme.borderThickness, theme.border);
     
-    Vector2 mousePos = GetMousePosition();
-    bool isHoveredLocally = CheckCollisionPointRec(mousePos, m_bounds);
-
+    bool isHoveredLocally = CheckCollisionPointRec(mousePos, barBg);
     Color barColor = m_enabled 
         ? (isHoveredLocally || m_isDragging ? theme.accent : theme.primary)
         : theme.textDim;
@@ -44,6 +54,13 @@ void Slider::draw(const Theme& theme) const {
     const char* valStr = TextFormat("%.2f", m_value);
     float valueX = barX + barWidth + 10.0f;
     DrawText(valStr, static_cast<int>(valueX), static_cast<int>(y), theme.fontSize, theme.text);
+
+        bool helpHovered = CheckCollisionPointRec(mousePos, helpRect);
+
+    if (helpHovered && !m_tooltip.empty()) {
+        DrawTooltip(m_tooltip, mousePos, theme);
+    }
+
 }
 
 bool Slider::handleInput() {

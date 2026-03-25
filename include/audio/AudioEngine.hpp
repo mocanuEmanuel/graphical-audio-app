@@ -7,6 +7,7 @@
 #include <string>
 #include <span>
 #include "raylib.h"
+#include "audio/Oscillator.hpp"
 
 namespace synth {
     //forward declaration we only referance we avoid circular dependency
@@ -26,7 +27,7 @@ namespace synth {
 
         AudioEngine(const AudioEngine&) = delete;
         AudioEngine& operator=(const AudioEngine&) = delete; //prevent copying
-
+        Oscillator& getOscillator();
         //effect management functions
         void addEffect(std::unique_ptr<IEffect> effect);
         bool removeEffect(const std::string& name);
@@ -48,6 +49,7 @@ namespace synth {
         void applyEffects(std::span<float> samples);
         void fillAudioStream();
         StateManager& m_stateManager;
+        Oscillator m_oscillator{44100.0f};
         AudioConfig m_config;
         std::vector<std::unique_ptr<IEffect>> m_effects;
         std::vector<float> m_audioBuffer;
@@ -55,9 +57,10 @@ namespace synth {
         AudioStream m_stream{};
 
         float m_masterVolume = 0.7f;
-        bool m_playing = false;
+        //bool m_playing = false; //using raylib instead
         bool m_initialized = false;
         bool m_streamInitialized = false;
+        bool m_isPlaying = false;
         //commentig this for now i think i should handle this different
        /* float m_cachedTemperature = 0.0f;
         float m_cachedFrequency = 0.0f;
